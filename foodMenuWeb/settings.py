@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'foodMenuWeb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'foodMenu',
+        'USER': 'postgres',
+        'PASSWORD': 'rai123',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -119,3 +123,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
