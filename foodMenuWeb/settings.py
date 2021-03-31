@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'foodMenuWeb.apps.foodMenu'
+    'foodMenuWeb.apps.foodMenu',
+    "graphene_django"
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+GRAPHENE = {
+"SCHEMA": "foodMenuWeb.apps.foodMenu.schema.schema"
+}
