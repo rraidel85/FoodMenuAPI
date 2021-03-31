@@ -12,6 +12,7 @@ class Category(models.Model):
         db_table = 'Category'
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+        ordering = ['id']
 
 class Local(models.Model):
     name = models.CharField('Name', max_length=50, unique=True)
@@ -24,6 +25,7 @@ class Local(models.Model):
         db_table = 'Local'
         verbose_name = 'Local'
         verbose_name_plural = 'Locals'
+        ordering = ['id']
         
 class MenuCategory(models.Model):
     local = models.ForeignKey(Local, on_delete=models.CASCADE)
@@ -35,6 +37,7 @@ class MenuCategory(models.Model):
     class Meta:
         db_table = 'MenuCategory'
         unique_together = ['local', 'category']
+        ordering = ['id']
 
 
 
@@ -47,7 +50,7 @@ class Product(models.Model):
     menu_cat = models.ManyToManyField(MenuCategory)
     name = models.CharField('Name', max_length=100, unique=True)
     description = models.CharField('Product Description',blank=True,null=True, max_length=255)
-    price = models.DecimalField('Price',max_digits=9, decimal_places=2,default=0.00)
+    price = models.DecimalField('Price',max_digits=9, decimal_places=2)
     image = models.ImageField('Image',blank=True,null=True,upload_to=product_image_path)
 
     def __str__(self):
@@ -57,10 +60,11 @@ class Product(models.Model):
         db_table = 'Product'
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
+        ordering = ['id']
 
 
 class Comment(models.Model):
-    author = models.CharField('Name', max_length=100)
+    author = models.CharField('Author', max_length=100)
     comment = models.TextField('Comment')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -71,3 +75,4 @@ class Comment(models.Model):
         db_table = 'Comment'
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
+        ordering = ['id']
