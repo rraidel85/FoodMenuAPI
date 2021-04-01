@@ -16,7 +16,7 @@ class Category(models.Model):
 
 class Local(models.Model):
     name = models.CharField('Name', max_length=50, unique=True)
-    categories = models.ManyToManyField(Category, through='MenuCategory')
+    categories = models.ManyToManyField(Category, through='MenuCategory', related_name='locals')
 
     def __str__(self):
         return self.name
@@ -47,7 +47,7 @@ def product_image_path(instance, filename):
 
 
 class Product(models.Model):
-    menu_cat = models.ManyToManyField(MenuCategory)
+    menu_cat = models.ManyToManyField(MenuCategory, related_name='products')
     name = models.CharField('Name', max_length=100, unique=True)
     description = models.CharField('Product Description',blank=True,null=True, max_length=255)
     price = models.DecimalField('Price',max_digits=9, decimal_places=2)
