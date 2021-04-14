@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'foodMenuWeb.apps.foodMenu',
     "graphene_django"
+    #django_cleanup comes at the end of all apps
+    'django_cleanup.apps.CleanupConfig'
 ]
 
 MIDDLEWARE = [
@@ -131,5 +133,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 GRAPHENE = {
-"SCHEMA": "foodMenuWeb.apps.foodMenu.schema.schema"
+"SCHEMA": "foodMenuWeb.apps.foodMenu.schema.schema.schema"
 }

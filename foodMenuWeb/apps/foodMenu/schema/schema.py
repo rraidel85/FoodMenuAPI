@@ -1,6 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
-from .models import Category, Local, MenuCategory, Product, Comment
+from foodMenuWeb.apps.foodMenu.models import Category, Local, MenuCategory, Product, Comment
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
 
