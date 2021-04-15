@@ -7,8 +7,9 @@ class CategoryNode(DjangoObjectType):
         model = Category
         filter_fields = {
             'id': ['exact'],
-            'name': ['exact', 'icontains', 'istartswith'],
-            'locals__name': ['exact'],
+            'name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
+            'locals': ['exact'],
+            'locals__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
         }
         interfaces = (relay.Node, )
 
@@ -18,8 +19,9 @@ class LocalNode(DjangoObjectType):
         model = Local
         filter_fields = {
             'id': ['exact'],
-            'name': ['exact', 'icontains', 'istartswith'],
-            'categories__name': ['exact', 'icontains'],
+            'name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
+            'categories': ['exact'],
+            'categories__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
         }
         interfaces = (relay.Node, )
 
@@ -29,10 +31,11 @@ class MenuNode(DjangoObjectType):
         model = MenuCategory
         filter_fields = {
             'local': ['exact'],
-            'local__name': ['exact', 'icontains', 'istartswith'],
+            'local__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
             'category': ['exact'],
-            'category__name': ['exact', 'icontains', 'istartswith'],
-            'products__name': ['exact', 'icontains', 'istartswith']
+            'category__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
+            'products': ['exact'],
+            'products__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
         }
         interfaces = (relay.Node, )
 
@@ -42,7 +45,10 @@ class ProductNode(DjangoObjectType):
         filter_fields = {
             'id': ['exact'],
             'name': ['exact', 'icontains', 'istartswith'],
-            'price': ['exact'],
+            'price': ['exact', 'gt', 'gte', 'lt', 'lte'],
+            'menus': ['exact'],
+            'menus__local__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
+            'menus__category__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
         }
         interfaces = (relay.Node, )
 
@@ -57,7 +63,8 @@ class CommentNode(DjangoObjectType):
         model = Comment
         filter_fields = {
             'id': ['exact'],
-            'author': ['exact', 'icontains', 'istartswith'],
-            'comment': ['exact'],
+            'author': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
+            'comment': ['exact',],
+            # 'created_at': ['iso_year__gt'],
         }
         interfaces = (relay.Node, )

@@ -14,6 +14,7 @@ class LocalQuery(graphene.ObjectType):
     all_locals = DjangoFilterConnectionField(LocalNode)
 
 class MenuQuery(graphene.ObjectType):
+    menu = relay.Node.Field(MenuNode)
     all_menus = DjangoFilterConnectionField(MenuNode)
 
 class ProductQuery(graphene.ObjectType):
