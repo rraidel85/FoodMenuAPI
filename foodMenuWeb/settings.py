@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'foodMenuWeb.apps.foodMenu',
-    "graphene_django"
+    "graphene_django",
     #django_cleanup comes at the end of all apps
-    'django_cleanup.apps.CleanupConfig'
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
