@@ -1,4 +1,3 @@
-import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 from ..models import Category, Local, Product, Comment, MenuCategory
@@ -9,6 +8,7 @@ class CategoryNode(DjangoObjectType):
         filter_fields = {
             'id': ['exact'],
             'name': ['exact', 'icontains', 'istartswith'],
+            'locals__name': ['exact'],
         }
         interfaces = (relay.Node, )
 
@@ -23,12 +23,16 @@ class LocalNode(DjangoObjectType):
         }
         interfaces = (relay.Node, )
 
+
 class MenuNode(DjangoObjectType):
     class Meta:
         model = MenuCategory
         filter_fields = {
-            'place__name': ['exact'],
+            'local': ['exact'],
+            'local__name': ['exact', 'icontains', 'istartswith'],
             'category': ['exact'],
+            'category__name': ['exact', 'icontains', 'istartswith'],
+            'products__name': ['exact', 'icontains', 'istartswith']
         }
         interfaces = (relay.Node, )
 
@@ -46,3 +50,14 @@ class ProductNode(DjangoObjectType):
         if self.image:
             self.image = info.context.build_absolute_uri(self.image.url)
         return self.image
+
+
+class CommentNode(DjangoObjectType):
+    class Meta:
+        model = Comment
+        filter_fields = {
+            'id': ['exact'],
+            'author': ['exact', 'icontains', 'istartswith'],
+            'comment': ['exact'],
+        }
+        interfaces = (relay.Node, )
