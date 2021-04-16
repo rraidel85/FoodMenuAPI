@@ -1,3 +1,4 @@
+import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 from ..models import Category, Local, Product, Comment, MenuCategory
@@ -38,6 +39,11 @@ class MenuNode(DjangoObjectType):
             'products__name': ['exact', 'contains', 'startswith', 'icontains', 'istartswith'],
         }
         interfaces = (relay.Node, )
+
+    full_name = graphene.String()
+
+    def resolve_full_name(self, info):
+            return f'{self.local}_{self.category}'
 
 class ProductNode(DjangoObjectType):
     class Meta:
