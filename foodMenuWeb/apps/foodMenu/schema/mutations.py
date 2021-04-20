@@ -92,26 +92,9 @@ class UpdateProduct(relay.ClientIDMutation):
             return UpdateProduct(product=None, success=False, error=str(e))
 
 
-class DeleteProduct(relay.ClientIDMutation):
-    """Delete a single product by ID"""
-    class Input:
-        id = graphene.String(required=True)
-
-    success = graphene.Boolean()
-    error = graphene.String()
-
-    @classmethod
-    def mutate_and_get_payload(cls, root, info, id):
-        try:
-            pk = from_global_id(id)[1]
-            product = Product.objects.get(pk=pk)
-            product.delete()
-            return DeleteProduct(success=True, error=None)
-        except Exception as e:
-            return DeleteProduct(success=False,error=str(e))
 
 class DeleteProducts(relay.ClientIDMutation):
-    """Delete multiple products by ID"""
+    """Delete a list or a single product by ID"""
     class Input:
         products = graphene.List(graphene.String, required=True)
 
@@ -126,12 +109,11 @@ class DeleteProducts(relay.ClientIDMutation):
                 product = Product.objects.get(pk=pk)
                 product.delete()
         except Exception as e:
-            return DeleteProduct(success=False,error=str(e))
+            return DeleteProducts(success=False,error=str(e))
 
-        return DeleteProduct(success=True, error=None)
+        return DeleteProducts(success=True, error=None)
 
 class ProductMutation(graphene.ObjectType):
     create_product = CreateProduct.Field()
     update_product = UpdateProduct.Field()
-    delete_product = DeleteProduct.Field()
     delete_products = DeleteProducts.Field()
