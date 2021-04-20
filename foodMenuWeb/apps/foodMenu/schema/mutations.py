@@ -28,20 +28,20 @@ class CreateProduct(relay.ClientIDMutation):
         except KeyError:
             image = None
 
-        try:
-            menus = data.pop("menus")
-        except KeyError:
-            menus = None
+        # try:
+        #     menus = data.pop("menus")
+        # except KeyError:
+        #     menus = None
 
         try:
             product = Product.objects.create(**data)
             if image:
                 product.image = image
-            if menus:
-                for node_id in menus:
-                    pk = from_global_id(node_id)[1]
-                    product.menus.add(pk)
-            product.save()
+            # if menus: # I left this here in case I want to pass menus id to the mutation
+            #     for node_id in menus:
+            #         pk = from_global_id(node_id)[1]
+            #         product.menus.add(pk)
+                product.save()
         except Exception as e:
             return CreateProduct(product=None, success=False, error=str(e))
 
@@ -72,21 +72,20 @@ class UpdateProduct(relay.ClientIDMutation):
         except KeyError:
             image = None
 
-        try:
-            menus = data.pop("menus")
-        except KeyError:
-            menus = None
+        # try:
+        #     menus = data.pop("menus")
+        # except KeyError:
+        #     menus = None
 
         try:
             Product.objects.filter(pk=pk).update(**data)
             product = Product.objects.get(pk=pk)
-            if image or menus:
-                if image:
-                    product.image = image
-                if menus:
-                    for node_id in menus:
-                        pk = from_global_id(node_id)[1]
-                        product.menus.add(pk)
+            if image: # or menus
+                product.image = image
+                # if menus:  # I left this here in case I want to pass menus id to the mutation
+                #     for node_id in menus:
+                #         pk = from_global_id(node_id)[1]
+                #         product.menus.add(pk)
                 product.save()
             return UpdateProduct(product=product, success=True, error=None)
         except Exception as e:
@@ -94,6 +93,7 @@ class UpdateProduct(relay.ClientIDMutation):
 
 
 class DeleteProduct(relay.ClientIDMutation):
+    """Delete a single product by ID"""
     class Input:
         id = graphene.String(required=True)
 
@@ -110,7 +110,28 @@ class DeleteProduct(relay.ClientIDMutation):
         except Exception as e:
             return DeleteProduct(success=False,error=str(e))
 
+class DeleteProducts(relay.ClientIDMutation):
+    """Delete multiple products by ID"""
+    class Input:
+        products = graphene.List(graphene.String, required=True)
+
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, products):
+        try:
+            for node_id in products:
+                pk = from_global_id(node_id)[1]
+                product = Product.objects.get(pk=pk)
+                product.delete()
+        except Exception as e:
+            return DeleteProduct(success=False,error=str(e))
+
+        return DeleteProduct(success=True, error=None)
+
 class ProductMutation(graphene.ObjectType):
     create_product = CreateProduct.Field()
     update_product = UpdateProduct.Field()
     delete_product = DeleteProduct.Field()
+    delete_products = DeleteProducts.Field()
