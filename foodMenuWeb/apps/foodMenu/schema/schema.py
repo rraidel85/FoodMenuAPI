@@ -1,7 +1,7 @@
 import graphene
-
 from .queries import (LocalQuery, CategoryQuery,
                       MenuQuery, ProductQuery, CommentQuery)
+from .mutations import ProductMutation
 
 # MAIN QUERY
 class Query(LocalQuery, CategoryQuery,
@@ -9,5 +9,8 @@ class Query(LocalQuery, CategoryQuery,
             CommentQuery, graphene.ObjectType):
     pass
 
+class Mutation(ProductMutation, graphene.ObjectType):
+    pass
 
-schema = graphene.Schema(query=Query)
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

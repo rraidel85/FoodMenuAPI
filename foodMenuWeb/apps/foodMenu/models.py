@@ -44,6 +44,20 @@ class Product(models.Model):
         ordering = ['id']
 
 
+class MenuCategory(models.Model):
+    local = models.ForeignKey(Local, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, related_name='menus')
+
+    def __str__(self):
+        return f'{self.local}->{self.category}'
+
+    class Meta:
+        db_table = 'MenuCategory'
+        unique_together = ['local', 'category']
+        ordering = ['id']
+
+
 class Comment(models.Model):
     author = models.CharField('Author', max_length=100)
     comment = models.TextField('Comment')
@@ -59,15 +73,3 @@ class Comment(models.Model):
         ordering = ['id']
 
 
-class MenuCategory(models.Model):
-    local = models.ForeignKey(Local, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, related_name='menus')
-
-    def __str__(self):
-        return f'{self.local}->{self.category}'
-
-    class Meta:
-        db_table = 'MenuCategory'
-        unique_together = ['local', 'category']
-        ordering = ['id']
