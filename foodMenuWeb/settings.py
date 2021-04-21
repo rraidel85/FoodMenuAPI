@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'foodMenuWeb.apps.foodMenu',
     'foodMenuWeb.apps.users',
-    "graphene_django",
+    'graphene_django',
     'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
-    'django_filters',
     'graphql_auth',
+    'django_filters',
     # django_cleanup comes at the end of all apps
     'django_cleanup.apps.CleanupConfig',
 ]
@@ -144,7 +144,32 @@ GRAPHENE = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    # 'graphql_jwt.backends.JSONWebTokenBackend',
-    "graphql_auth.backends.GraphQLAuthBackend",
+    'graphql_auth.backends.GraphQLAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    # "JWT_EXPIRATION_DELTA": timedelta(minutes=30),
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        ],
+}
+
+
+GRAPHQL_AUTH = {
+    'SEND_ACTIVATION_EMAIL': False,
+    'ALLOW_DELETE_ACCOUNT': True,
+    'REGISTER_MUTATION_FIELDS': ["username"],
+    'REGISTER_MUTATION_FIELDS_OPTIONAL': ["email", "first_name", "last_name"],
+    'LOGIN_ALLOWED_FIELDS': ["username"],
+    'USER_NODE_EXCLUDE_FIELDS': ["password", "is_superuser", "is_staff", "is_active"]
+}
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
