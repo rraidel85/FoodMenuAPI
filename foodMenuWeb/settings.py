@@ -38,7 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'foodMenuWeb.apps.foodMenu',
+    'foodMenuWeb.apps.users',
     "graphene_django",
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'django_filters',
+    'graphql_auth',
     # django_cleanup comes at the end of all apps
     'django_cleanup.apps.CleanupConfig',
 ]
@@ -133,5 +137,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 GRAPHENE = {
-"SCHEMA": "foodMenuWeb.apps.foodMenu.schema.schema.schema"
+    "SCHEMA": "foodMenuWeb.apps.foodMenu.schema.schema.schema",
+    'MIDDLEWARE': [
+            'graphql_jwt.middleware.JSONWebTokenMiddleware',
+        ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    # 'graphql_jwt.backends.JSONWebTokenBackend',
+    "graphql_auth.backends.GraphQLAuthBackend",
+    'django.contrib.auth.backends.ModelBackend',
+]
