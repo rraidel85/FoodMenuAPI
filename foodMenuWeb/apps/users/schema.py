@@ -27,6 +27,8 @@ class ManualVerify(graphene.Mutation):
         return ManualVerify(success=True, errors=None)
 
 
+
+
 class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
     # password_reset = mutations.PasswordReset.Field()    I have make my own

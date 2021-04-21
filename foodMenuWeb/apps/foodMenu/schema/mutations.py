@@ -1,5 +1,6 @@
 import graphene
 from graphene import relay
+from graphql_jwt.decorators import permission_required
 from graphql_relay import from_global_id
 from graphene_file_upload.scalars import Upload
 from graphene.types import Decimal
@@ -191,6 +192,7 @@ class CreateCategory(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.add_category')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             category = Category.objects.create(**data)
