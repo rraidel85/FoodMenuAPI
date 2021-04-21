@@ -164,8 +164,8 @@ class DeleteLocals(relay.ClientIDMutation):
         try:
             for node_id in locals:
                 pk = from_global_id(node_id)[1]
-                locals = Local.objects.get(pk=pk)
-                locals.delete()
+                local = Local.objects.get(pk=pk)
+                local.delete()
         except Exception as e:
             return DeleteLocals(success=False,error=str(e))
 
@@ -176,3 +176,76 @@ class LocalMutation(graphene.ObjectType):
     create_local = CreateLocal.Field()
     update_local = UpdateLocal.Field()
     delete_locals = DeleteLocals.Field()
+
+
+
+# Category Mutations--------------------------------------------
+
+class CreateCategory(relay.ClientIDMutation):
+    """Create a new category"""
+    class Input:
+        name = graphene.String(required=True)
+
+    category = graphene.Field(CategoryNode)
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        try:
+            category = Category.objects.create(**data)
+        except Exception as e:
+            return CreateCategory(category=None, success=False, error=str(e))
+
+        return CreateCategory(category=category,success=True,error=None)
+
+
+class UpdateCategory(relay.ClientIDMutation):
+    """Update a category by ID"""
+    class Input:
+        id = graphene.String(required=True)
+        name = graphene.String()
+
+    category = graphene.Field(CategoryNode)
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        try:
+            category_pk = from_global_id(data['id'])[1]
+            del data['id']
+            Category.objects.filter(pk=category_pk).update(**data)
+            category = Category.objects.get(pk=category_pk)
+        except Exception as e:
+            return UpdateCategory(category=None, success=False, error=str(e))
+
+        return UpdateCategory(category=category, success=True, error=None)
+
+
+
+class DeleteCategories(relay.ClientIDMutation):
+    """Delete a list or a single category by ID"""
+    class Input:
+        categories = graphene.List(graphene.String, required=True)
+
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, categories):
+        try:
+            for node_id in categories:
+                pk = from_global_id(node_id)[1]
+                category = Category.objects.get(pk=pk)
+                category.delete()
+        except Exception as e:
+            return DeleteCategories(success=False,error=str(e))
+
+        return DeleteCategories(success=True, error=None)
+
+
+class CategoryMutation(graphene.ObjectType):
+    create_category = CreateCategory.Field()
+    update_category = UpdateCategory.Field()
+    delete_categories = DeleteCategories.Field()
