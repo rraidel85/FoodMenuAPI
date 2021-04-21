@@ -370,3 +370,53 @@ class MenuMutation(graphene.ObjectType):
     add_products_to_menu = AddProductsToMenu.Field()
     delete_products_from_menu = DeleteProductsFromMenu.Field()
     delete_menu = DeleteMenu.Field()
+
+
+
+
+# Comment Mutations--------------------------------------------
+
+class CreateComment(relay.ClientIDMutation):
+    """Create a new comment"""
+    class Input:
+        author = graphene.String(required=True)
+        comment = graphene.String(required=True)
+
+    comment = graphene.Field(CommentNode)
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        try:
+            comment = Comment.objects.create(**data)
+        except Exception as e:
+            return CreateComment(comment=None, success=False, error=str(e))
+
+        return CreateComment(comment=comment,success=True,error=None)
+
+
+class DeleteComments(relay.ClientIDMutation):
+    """Delete a list or a single comment by ID"""
+    class Input:
+        comments = graphene.List(graphene.String, required=True)
+
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, comments):
+        try:
+            for node_id in comments:
+                pk = from_global_id(node_id)[1]
+                comment = Comment.objects.get(pk=pk)
+                comment.delete()
+        except Exception as e:
+            return DeleteComments(success=False,error=str(e))
+
+        return DeleteComments(success=True, error=None)
+
+
+class CommentMutation(graphene.ObjectType):
+    create_comment = CreateComment.Field()
+    delete_comments = DeleteComments.Field()
