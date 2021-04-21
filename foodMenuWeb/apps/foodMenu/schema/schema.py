@@ -1,7 +1,8 @@
 import graphene
 from .queries import (LocalQuery, CategoryQuery,
                       MenuQuery, ProductQuery, CommentQuery)
-from .mutations import ProductMutation, LocalMutation, CategoryMutation
+from .mutations import (ProductMutation, LocalMutation,
+                        CategoryMutation, MenuMutation)
 
 # MAIN QUERY
 class Query(LocalQuery, CategoryQuery,
@@ -10,7 +11,7 @@ class Query(LocalQuery, CategoryQuery,
     pass
 
 class Mutation(ProductMutation, LocalMutation,
-               CategoryMutation, graphene.ObjectType):
+               CategoryMutation, MenuMutation, graphene.ObjectType):
     pass
 
 

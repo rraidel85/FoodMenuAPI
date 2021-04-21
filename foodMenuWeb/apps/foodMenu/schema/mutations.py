@@ -249,3 +249,124 @@ class CategoryMutation(graphene.ObjectType):
     create_category = CreateCategory.Field()
     update_category = UpdateCategory.Field()
     delete_categories = DeleteCategories.Field()
+
+
+
+
+# Menus Mutations--------------------------------------------
+
+class CreateMenu(relay.ClientIDMutation):
+    """Create a new local and category relationship (menu)"""
+    class Input:
+        local = graphene.String(required=True)
+        category = graphene.String(required=True)
+        products = graphene.List(graphene.String)
+
+    menu = graphene.Field(MenuNode)
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        try:
+            products = data.pop("products")
+        except KeyError:
+            products = None
+
+        try:
+            local_id = from_global_id(data['local'])[1]
+            local = Local.objects.get(id=local_id)
+            category_id = from_global_id(data['category'])[1]
+            category = Category.objects.get(id=category_id)
+            menu = MenuCategory.objects.create(local=local, category=category)
+            if products:
+                for node_id in products:
+                    product_pk = from_global_id(node_id)[1]
+                    menu.products.add(product_pk)
+        except Exception as e:
+            return CreateMenu(menu=None, success=False, error=str(e))
+
+        return CreateMenu(menu=menu, success=True, error=None)
+
+
+class AddProductsToMenu(relay.ClientIDMutation):
+    """Add products to a local and category relationship (menu)"""
+    class Input:
+        local = graphene.String(required=True)
+        category = graphene.String(required=True)
+        products = graphene.List(graphene.String, required=True)
+
+    menu = graphene.Field(MenuNode)
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        try:
+            local = from_global_id(data['local'])[1]
+            category = from_global_id(data['category'])[1]
+            menu = MenuCategory.objects.get(local=local, category=category)
+            for node_id in data['products']:
+                product_pk = from_global_id(node_id)[1]
+                menu.products.add(product_pk)
+        except Exception as e:
+            return AddProductsToMenu(menu=None, success=False, error=str(e))
+
+        return AddProductsToMenu(menu=menu, success=True, error=None)
+
+
+
+class DeleteProductsFromMenu(relay.ClientIDMutation):
+    """Delete products from a local and category relationship (menu)"""
+    class Input:
+        local = graphene.String(required=True)
+        category = graphene.String(required=True)
+        products = graphene.List(graphene.String, required=True)
+
+    menu = graphene.Field(MenuNode)
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        try:
+            local = from_global_id(data['local'])[1]
+            category = from_global_id(data['category'])[1]
+            menu = MenuCategory.objects.get(local=local, category=category)
+            for node_id in data['products']:
+                product_pk = from_global_id(node_id)[1]
+                menu.products.remove(product_pk)
+        except Exception as e:
+            return DeleteProductsFromMenu(menu=None, success=False, error=str(e))
+
+        return DeleteProductsFromMenu(menu=menu, success=True, error=None)
+
+
+
+class DeleteMenu(relay.ClientIDMutation):
+    """Delete a single local and category relationship (menu)"""
+    class Input:
+        local = graphene.String(required=True)
+        category = graphene.String(required=True)
+
+    success = graphene.Boolean()
+    error = graphene.String()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        try:
+            local = from_global_id(data['local'])[1]
+            category = from_global_id(data['category'])[1]
+            menu = MenuCategory.objects.get(local=local, category=category)
+            menu.delete()
+        except Exception as e:
+            return DeleteMenu(success=False,error=str(e))
+
+        return DeleteMenu(success=True, error=None)
+
+
+class MenuMutation(graphene.ObjectType):
+    create_menu = CreateMenu.Field()
+    add_products_to_menu = AddProductsToMenu.Field()
+    delete_products_from_menu = DeleteProductsFromMenu.Field()
+    delete_menu = DeleteMenu.Field()
