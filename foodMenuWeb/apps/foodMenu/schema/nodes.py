@@ -16,10 +16,10 @@ class CategoryNode(DjangoObjectType):
         }
         interfaces = (relay.Node, )
 
-    @classmethod
-    @permission_required('foodMenu.view_category')
-    def get_queryset(cls, queryset, info):
-        super().get_queryset(queryset, info)
+    # @classmethod
+    # @permission_required('foodMenu.view_category')
+    # def get_queryset(cls, queryset, info):
+    #     super().get_queryset(queryset, info)
 
 
 class LocalNode(DjangoObjectType):
@@ -80,7 +80,7 @@ class ProductNode(DjangoObjectType):
         return self.image
 
     @classmethod
-    @permission_required('foodMenu.view_product')
+    @permission_required('foodMenu.view_category')
     def get_queryset(cls, queryset, info):
         super().get_queryset(queryset, info)
 
