@@ -167,6 +167,7 @@ GRAPHQL_AUTH = {
     'REGISTER_MUTATION_FIELDS': ["username"],
     'REGISTER_MUTATION_FIELDS_OPTIONAL': ["email", "first_name", "last_name"],
     'LOGIN_ALLOWED_FIELDS': ["username"],
+    'UPDATE_MUTATION_FIELDS': ["username", "first_name", "last_name"],
     'USER_NODE_EXCLUDE_FIELDS': ["password", "is_superuser", "is_staff", "is_active"]
 }
 

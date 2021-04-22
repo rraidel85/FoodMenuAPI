@@ -108,9 +108,9 @@ class AuthMutation(graphene.ObjectType):
     # password_reset = mutations.PasswordReset.Field()   # I have to make my own password_reset mutation
 
     # Need to be authenticated
-    password_change = mutations.PasswordChange.Field()
+    change_password = mutations.PasswordChange.Field()
     update_account = mutations.UpdateAccount.Field()
-    delete_account = mutations.DeleteAccount.Field() #I have make my own for superuser can delete others accounts
+    delete_account = mutations.DeleteAccount.Field() #I have to make my own for superuser can delete others accounts
 
     # django-graphql-jwt inheritances  # No need of being authenticated
     token_auth = mutations.ObtainJSONWebToken.Field()
