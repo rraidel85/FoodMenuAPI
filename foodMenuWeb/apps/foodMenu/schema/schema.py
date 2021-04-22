@@ -1,3 +1,5 @@
+
+# MAIN SCHEMA
 import graphene
 from .queries import (LocalQuery, CategoryQuery,
                       MenuQuery, ProductQuery, CommentQuery)
@@ -13,6 +15,7 @@ class Query(LocalQuery, CategoryQuery,
             CommentQuery, UserQuery, MeQuery, graphene.ObjectType):
     pass
 
+# MAIN MUTATION
 class Mutation(ProductMutation, LocalMutation,
                CategoryMutation, MenuMutation,
                CommentMutation, AuthMutation, graphene.ObjectType):

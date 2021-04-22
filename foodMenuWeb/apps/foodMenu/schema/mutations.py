@@ -22,6 +22,7 @@ class CreateProduct(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.add_product')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             image = data.pop("image")
@@ -54,6 +55,7 @@ class UpdateProduct(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.change_product')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             image = data.pop("image")
@@ -83,6 +85,7 @@ class DeleteProducts(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.delete_product')
     def mutate_and_get_payload(cls, root, info, products):
         try:
             for node_id in products:
@@ -112,6 +115,7 @@ class CreateLocal(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.add_local')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             local = Local.objects.create(**data)
@@ -133,6 +137,7 @@ class UpdateLocal(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.change_local')
     def mutate_and_get_payload(cls, root, info, **data):
 
         # try:
@@ -161,6 +166,7 @@ class DeleteLocals(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.delete_local')
     def mutate_and_get_payload(cls, root, info, locals):
         try:
             for node_id in locals:
@@ -213,6 +219,7 @@ class UpdateCategory(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.change_category')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             category_pk = from_global_id(data['id'])[1]
@@ -235,6 +242,7 @@ class DeleteCategories(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.delete_category')
     def mutate_and_get_payload(cls, root, info, categories):
         try:
             for node_id in categories:
@@ -269,6 +277,7 @@ class CreateMenu(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.add_menucategory')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             products = data.pop("products")
@@ -303,6 +312,7 @@ class AddProductsToMenu(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.change_menucategory')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             local = from_global_id(data['local'])[1]
@@ -330,6 +340,7 @@ class DeleteProductsFromMenu(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.change_menucategory')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             local = from_global_id(data['local'])[1]
@@ -355,6 +366,7 @@ class DeleteMenu(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.delete_menucategory')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             local = from_global_id(data['local'])[1]
@@ -389,6 +401,7 @@ class CreateComment(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.add_comment')
     def mutate_and_get_payload(cls, root, info, **data):
         try:
             comment = Comment.objects.create(**data)
@@ -407,6 +420,7 @@ class DeleteComments(relay.ClientIDMutation):
     error = graphene.String()
 
     @classmethod
+    @permission_required('foodMenu.delete_comment')
     def mutate_and_get_payload(cls, root, info, comments):
         try:
             for node_id in comments:

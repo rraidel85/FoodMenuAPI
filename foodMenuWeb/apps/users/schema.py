@@ -2,8 +2,10 @@ import graphene
 from django.contrib.auth.models import Group
 from graphql_auth import mutations
 from django.contrib.auth import get_user_model
+from graphql_jwt.decorators import permission_required
 
 
+# My Mutations---------------------------------------------------------------------------
 class ManualVerify(graphene.Mutation):
     success = graphene.Boolean()
     errors = graphene.String()
@@ -12,6 +14,7 @@ class ManualVerify(graphene.Mutation):
         username = graphene.String(required=True)
 
     @classmethod
+    @permission_required('auth.change_user')
     def mutate(cls, root, info, **kwargs):
         User = get_user_model()
         username = kwargs.get('username')
@@ -38,6 +41,7 @@ class AddUserToGroup(graphene.Mutation):
         group = graphene.String(required=True)
 
     @classmethod
+    @permission_required('auth.change_user')
     def mutate(cls, root, info, **kwargs):
         User = get_user_model()
         username = kwargs.get('username')
@@ -69,6 +73,7 @@ class RemoveUserFromGroup(graphene.Mutation):
         group = graphene.String(required=True)
 
     @classmethod
+    @permission_required('auth.change_user')
     def mutate(cls, root, info, **kwargs):
         User = get_user_model()
         username = kwargs.get('username')
@@ -89,21 +94,31 @@ class RemoveUserFromGroup(graphene.Mutation):
 
         return RemoveUserFromGroup(success=True, errors=None)
 
+class MyRegister(mutations.Register, graphene.Mutation):
+    @classmethod
+    @permission_required('auth.add_user')
+    def mutate(cls, root, info, **input):
+        return super().mutate(root, info, **input)
 
+
+
+# Auth Mutations--------------------------------------------------
 class AuthMutation(graphene.ObjectType):
-    register = mutations.Register.Field()
-    # password_reset = mutations.PasswordReset.Field()    I have to make my own
+    register = MyRegister.Field() # need administrador permissions
+    # password_reset = mutations.PasswordReset.Field()   # I have to make my own password_reset mutation
+
+    # Need to be authenticated
     password_change = mutations.PasswordChange.Field()
     update_account = mutations.UpdateAccount.Field()
     delete_account = mutations.DeleteAccount.Field() #I have make my own for superuser can delete others accounts
 
-    # django-graphql-jwt inheritances
+    # django-graphql-jwt inheritances  # No need of being authenticated
     token_auth = mutations.ObtainJSONWebToken.Field()
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()
     revoke_token = mutations.RevokeToken.Field()
 
     # my mutations
-    manual_verify = ManualVerify.Field()
-    add_user_to_group = AddUserToGroup.Field()
-    remove_user_from_group = RemoveUserFromGroup.Field()
+    manual_verify = ManualVerify.Field(description='Apply this after register mutation to verify a user')
+    add_user_to_group = AddUserToGroup.Field(description='After a user is created use this to add it to a group')
+    remove_user_from_group = RemoveUserFromGroup.Field(description='Remove user from a group')

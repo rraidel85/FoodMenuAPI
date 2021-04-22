@@ -2,7 +2,6 @@ import graphene
 from graphene import relay
 from graphene_django.filter import DjangoFilterConnectionField
 from .nodes import CategoryNode, LocalNode, MenuNode, ProductNode, CommentNode
-# from ..models import Category, Local, Product, Comment, MenuCategory
 
 
 class CategoryQuery(graphene.ObjectType):

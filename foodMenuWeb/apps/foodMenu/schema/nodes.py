@@ -16,10 +16,6 @@ class CategoryNode(DjangoObjectType):
         }
         interfaces = (relay.Node, )
 
-    # @classmethod
-    # @permission_required('foodMenu.view_category')
-    # def get_queryset(cls, queryset, info):
-    #     super().get_queryset(queryset, info)
 
 
 class LocalNode(DjangoObjectType):
@@ -33,10 +29,6 @@ class LocalNode(DjangoObjectType):
         }
         interfaces = (relay.Node, )
 
-    @classmethod
-    @permission_required('foodMenu.view_local')
-    def get_queryset(cls, queryset, info):
-        super().get_queryset(queryset, info)
 
 class MenuNode(DjangoObjectType):
     class Meta:
@@ -56,10 +48,6 @@ class MenuNode(DjangoObjectType):
     def resolve_full_name(self, info):
             return f'{self.local}_{self.category}'
 
-    @classmethod
-    @permission_required('foodMenu.view_menucategory')
-    def get_queryset(cls, queryset, info):
-        super().get_queryset(queryset, info)
 
 class ProductNode(DjangoObjectType):
     class Meta:
@@ -79,10 +67,6 @@ class ProductNode(DjangoObjectType):
             self.image = info.context.build_absolute_uri(self.image.url)
         return self.image
 
-    @classmethod
-    @permission_required('foodMenu.view_category')
-    def get_queryset(cls, queryset, info):
-        super().get_queryset(queryset, info)
 
 
 class CommentNode(DjangoObjectType):
@@ -99,4 +83,4 @@ class CommentNode(DjangoObjectType):
     @classmethod
     @permission_required('foodMenu.view_comment')
     def get_queryset(cls, queryset, info):
-        super().get_queryset(queryset, info)
+        return super().get_queryset(queryset, info)
